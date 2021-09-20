@@ -1,0 +1,86 @@
+========================================================================
+DFA - decomment.c
+Author: Baris Onat
+========================================================================
+
+------------------------------------------------------------------------
+Textual representation of "decomment.c" DFA that removes comments from 
+a given C file.
+------------------------------------------------------------------------
+
+States: NORMAL, START_SLASH, COMMENT, END_STAR, STR_LITERAL, 
+CHAR_LITERAL, CHAR_ESCAPE, STR_ESCAPE
+
+
+State 1 - NORMAL (accept) <-- The starting state.
+
+    /  --->  START_SLASH
+    "  --->  STR_LITERAL
+    '  --->  CHAR_LITERAL
+    Else  ---> NORMAL
+
+   
+State 2 - START_SLASH (accept) <-- This state is used to 
+determine if there is a star character after a slash character. If a 
+slash character was inputted in the normal state, the DFA will be in 
+this state.
+
+    *  --->  COMMENT
+    /  --->  START_SLASH
+    "  --->  STR_LITERAL
+    '  --->  CHAR_LITERAL
+    Else  --->  NORMAL
+
+
+State 3 - COMMENT (reject) <-- This state is the state the program will 
+stay when it is inside a comment.
+
+    *  ---> END_STAR
+    Else  ---> COMMENT
+
+
+State 4 - END_STAR (reject) <-- This state is used inside a 
+comment to determine if there is a slash character after an observed
+star character. If there is, exit the comment; otherwise, stay in 
+comment.
+
+    /  --->  NORMAL
+    Else  --->  COMMENT
+
+
+State 5 - CHAR_LITERAL (accept) <-- This state indicates that the given 
+character is inside a character literal.
+
+    \  --->  CHAR_ESCAPE
+    '  --->  NORMAL
+    Else  --->  CHAR_LITERAL
+
+
+State 6 - STR_LITERAL (accept) <-- This state indicates that the given 
+character is inside a String literal.
+
+    \  --->  STR_ESCAPE
+    "  --->  NORMAL
+    Else  --->  STR_LITERAL
+
+
+State 7 - CHAR_ESCAPE (accept) <-- This state indicates that the input
+was in a character literal and a back slash was encountered. After
+reading a character, the DFA will go back to the character literal.
+
+    Anything  --->  CHAR_LITERAL
+
+
+State 8 - STR_ESCAPE (accept) <-- This state indicates that the input
+was in a String literal and a back slash was encountered. After
+reading a character, the DFA will go back to the String literal.
+
+    Anything  --->  STR_LITERAL
+
+
+
+
+
+
+
+
