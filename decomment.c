@@ -146,7 +146,7 @@ int main(void){
     int iLineCountInComment;
     
     iLineCount = 1;
-    iLineCountInComment = 1;
+    iLineCountInComment = 0;
 
     while ((iChar = getchar()) != EOF) {
         if(iChar == '\n'){
@@ -192,7 +192,8 @@ int main(void){
     }
     
     if (state == COMMENT || state == END_STAR){
-        fprintf( stderr, "Error: line %d: unterminated comment", iLineCount - iLineCountInComment);
+        fprintf( stderr, "Error: line %d: unterminated comment\n", 
+        iLineCount - iLineCountInComment);
         return EXIT_FAILURE;
     } 
     else{
