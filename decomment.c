@@ -184,26 +184,13 @@ int main(void){
     enum Statetype state = NORMAL;
     int c; /* the current char */
     int lineCount; /* the number of new line characters in the text */
-    /* the number of new line characters in the most recent comment */
-    int lineCountInComment; 
+    /* the line at which the most recent comment starts */
+    int commentStartLine; 
     
     lineCount = 1;
-    lineCountInComment = 0;
 
     while ((c = getchar()) != EOF) {
         if (c == '\n'){
-            if (state == COMMENT || state == END_STAR){
-                lineCountInComment++;
-                putchar(c);
-            }
-            else{
-                /* The lineCountInComment counts the number of new
-                   line characters observed in the most recent comment
-                   in case there is an unterminated comment. But the
-                   fact that the program is in the else statement shows
-                   that the text is out of the comment. */
-                lineCountInComment = 0;
-            }
             lineCount++;
         }
         switch (state) {
@@ -214,6 +201,7 @@ int main(void){
                 state = handleStartSlashState(c);
                 break;
             case COMMENT:
+                commentStartLine = lineCount;
                 state = handleCommentState(c);
                 break;
             case END_STAR:
@@ -242,7 +230,7 @@ int main(void){
     
     if (state == COMMENT || state == END_STAR){
         fprintf( stderr, "Error: line %d: unterminated comment\n", 
-        lineCount - lineCountInComment);
+        commentStartLine);
         return EXIT_FAILURE;
     } 
     else{
