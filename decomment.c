@@ -206,10 +206,10 @@ int main(void){
                 state = handleNormalState(c);
                 break;
             case START_SLASH:
+                commentStartLine = lineCount;
                 state = handleStartSlashState(c);
                 break;
             case COMMENT:
-                commentStartLine = lineCount;
                 state = handleCommentState(c);
                 break;
             case END_STAR:
