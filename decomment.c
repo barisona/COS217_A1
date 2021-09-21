@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-// A global variable Statetype for storing the current state to use in
-// the DFA
+/* A global variable Statetype for storing the current state to use in
+   the DFA */
 enum Statetype {NORMAL, START_SLASH, COMMENT, END_STAR, STR_LITERAL, 
 CHAR_LITERAL, STR_ESCAPE, CHAR_ESCAPE};
 
@@ -27,7 +27,7 @@ enum Statetype handleNormalState(int c){
         state = STR_LITERAL;
     }
     else if (c == '/'){
-        // c should not be written if a star follows the slash
+        /* c should not be written if a star follows the slash. */
         state = START_SLASH;
     }
     else{
@@ -45,12 +45,12 @@ enum Statetype handleNormalState(int c){
 enum Statetype handleStartSlashState(int c){
     enum Statetype state;
     if (c == '*'){
-        putchar(' '); // replace the comment with a space
+        putchar(' '); /* replace the comment with a space */
         state = COMMENT;
     }
 
-    // If a star does not follow the slash character, we should write
-    // the slash character.
+    /* If a star does not follow the slash character, we should write
+       the slash character. */
     else if (c == '\'') {
         putchar('/');
         putchar(c);
@@ -182,9 +182,9 @@ enum Statetype handleStrEscapeState(int c){
 int main(void){
     /* State indicates the current DFA state. */
     enum Statetype state = NORMAL;
-    int c; // the current char
-    int lineCount; // the number of new line characters in the text
-    // the number of new line characters in the most recent comment
+    int c; /* the current char */
+    int lineCount; /* the number of new line characters in the text */
+    /* the number of new line characters in the most recent comment */
     int lineCountInComment; 
     
     lineCount = 1;
@@ -234,8 +234,8 @@ int main(void){
         }
     }
 
-    // If the last character is a slash character, the DFA will not
-    // print a slash due to its nature. It should print it here.
+    /* If the last character is a slash character, the DFA will not
+       print a slash due to its nature. It should print it here. */
     if (state == START_SLASH){
         putchar('/');
     }
