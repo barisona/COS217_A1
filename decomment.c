@@ -145,8 +145,8 @@ int main(void){
     int iLineCount;
     int iLineCountInComment;
     
-    iLineCount = 0;
-    iLineCountInComment = 0;
+    iLineCount = 1;
+    iLineCountInComment = 1;
 
     while ((iChar = getchar()) != EOF) {
         if(iChar == '\n'){
