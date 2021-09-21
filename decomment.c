@@ -24,7 +24,6 @@ enum Statetype handleNormalState(int c){
         state = STR_LITERAL;
     }
     else if (c == '/'){
-        putchar(c);
         state = START_SLASH;
     }
     else{
@@ -38,14 +37,16 @@ enum Statetype handleNormalState(int c){
 enum Statetype handleStartSlashState(int c){
     enum Statetype state;
     if (c == '\'') {
+        putchar('/');
         putchar(c);
         state = CHAR_LITERAL;
     }
     else if (c == '*'){
-        putchar(c);
+        putchar(' ');
         state = COMMENT;
     }
     else if (c == '"') {
+        putchar('/');
         putchar(c);
         state = STR_LITERAL;
     }
@@ -54,6 +55,7 @@ enum Statetype handleStartSlashState(int c){
         state = START_SLASH;
     }
     else{
+        putchar('/');
         putchar(c);
         state = NORMAL;
     }
@@ -75,13 +77,14 @@ enum Statetype handleCommentState(int c){
 enum Statetype handleEndStarState(int c){
     enum Statetype state;
     if (c == '/'){
-        putchar(' ');
         state = NORMAL;
+    }
+    else if (c == '*'){
+        state = END_STAR;
     }
     else{
         state = COMMENT;
     }
-
     return state;
 }
 
@@ -122,75 +125,74 @@ enum Statetype handleStrLiteralState(int c){
 }
 
 enum Statetype handleCharEscapeState(int c){
-    enum Statetype state;
-    if (c) {
-        putchar(c);
-        state = CHAR_LITERAL;
-    } 
-    
-    return state;
+    putchar(c);
+    return CHAR_LITERAL;
 }
 
 enum Statetype handleStrEscapeState(int c){
-    enum Statetype state;
-    if (c) {
-        putchar(c);
-        state = STR_LITERAL;
-    } 
-    
-    return state;
+    putchar(c);
+    return STR_LITERAL;
 }
-
 
 /*----------------------------------------------------------*/
 /* Read text from stdin. Convert the first character of each
    "word" to uppercase, where a word is a sequence of
    letters. Write the result to stdout. Return 0. */
 int main(void){
-    int c;
     /* Use a DFA approach.  state indicates the DFA state. */
     enum Statetype state = NORMAL;
-    while ((c = getchar()) != EOF) {
+    int iChar;
+    int iLineCount;
+    int iLineCountInComment;
+    
+    iLineCount = 0;
+    iLineCountInComment = 0;
+
+    while ((iChar = getchar()) != EOF) {
+        if(iChar == '\n'){
+            if(state == COMMENT || state == END_STAR){
+                iLineCountInComment++;
+                putchar(iChar);
+            }
+            iLineCount++;
+        }
         switch (state) {
             case NORMAL:
-                state = handleNormalState(c);
+                state = handleNormalState(iChar);
                 break;
             case START_SLASH:
-                state = handleStartSlashState(c);
+                state = handleStartSlashState(iChar);
                 break;
             case COMMENT:
-                state = handleCommentState(c);
+                state = handleCommentState(iChar);
                 break;
             case END_STAR:
-                state = handleEndStarState(c);
+                state = handleEndStarState(iChar);
                 break;
             case CHAR_LITERAL:
-                state = handleCharLiteralState(c);
+                state = handleCharLiteralState(iChar);
                 break;
             case STR_LITERAL:
-                state = handleStrLiteralState(c);
+                state = handleStrLiteralState(iChar);
                 break;
             case CHAR_ESCAPE:
-                state = handleCharEscapeState(c);
+                state = handleCharEscapeState(iChar);
                 break;
             case STR_ESCAPE:
-                state = handleStrEscapeState(c);
+                state = handleStrEscapeState(iChar);
                 break;
         }
     }
 
-    switch(state) {
-            case NORMAL:
-            case START_SLASH:
-            case CHAR_LITERAL:
-            case STR_LITERAL:
-            case CHAR_ESCAPE:
-            case STR_ESCAPE:
-                return EXIT_SUCCESS;
-            case COMMENT:
-            case END_STAR:
-                return EXIT_FAILURE;
-
-
+    if (state == START_SLASH){
+        putchar('/');
+    }
+    
+    if (state == COMMENT || state == END_STAR){
+        fprintf( stderr, "Error: line %d: unterminated comment", iLineCount - iLineCountInComment);
+        return EXIT_FAILURE;
+    } 
+    else{
+        return EXIT_SUCCESS;
     }
 }
