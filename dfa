@@ -35,7 +35,8 @@ this state.
 State 3 - COMMENT (reject) <-- This state is the state the program will 
 stay when it is inside a comment.
 
-    *  ---> END_STAR
+    *  --->  END_STAR
+    \n  --->  COMMENT 
     Else  ---> COMMENT
 
 
@@ -46,6 +47,7 @@ comment.
 
     /  --->  NORMAL
     *  --->  END_STAR
+    \n  --->  COMMENT
     Else  --->  COMMENT
 
 
@@ -54,7 +56,7 @@ character is inside a character literal.
 
     \  --->  CHAR_ESCAPE
     '  --->  NORMAL
-    Else  --->  CHAR_LITERAL
+    Else  --->  CHAR_LITERAL 
 
 
 State 6 - STR_LITERAL (accept) <-- This state indicates that the given 

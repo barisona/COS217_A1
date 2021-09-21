@@ -83,6 +83,10 @@ enum Statetype handleCommentState(int c){
     if (c == '*') {
         state = END_STAR;
     } 
+    else if (c == '\n'){
+        putchar(c);
+        state = COMMENT;
+    }
     else{
         state = COMMENT;
     }
@@ -101,6 +105,10 @@ enum Statetype handleEndStarState(int c){
     }
     else if (c == '*'){
         state = END_STAR;
+    }
+    else if (c == '\n'){
+        putchar(c);
+        state = COMMENT;
     }
     else{
         state = COMMENT;
