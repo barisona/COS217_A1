@@ -45,6 +45,7 @@ star character. If there is, exit the comment; otherwise, stay in
 comment.
 
     /  --->  NORMAL
+    *  --->  END_STAR
     Else  --->  COMMENT
 
 
