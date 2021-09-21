@@ -154,6 +154,9 @@ int main(void){
                 iLineCountInComment++;
                 putchar(iChar);
             }
+            else{
+                iLineCountInComment = 0;
+            }
             iLineCount++;
         }
         switch (state) {
